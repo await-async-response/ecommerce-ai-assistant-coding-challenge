@@ -1,0 +1,212 @@
+[
+  {
+    "id": 1,
+    "name": "USB-C Cable 1m",
+    "sku": "CABL-USBC-1M",
+    "current_price_cents": 899,
+    "created_at": "2025-01-06T09:00:00.000Z"
+  },
+  {
+    "id": 2,
+    "name": "Wireless Mouse",
+    "sku": "MOUS-WL-001",
+    "current_price_cents": 2499,
+    "created_at": "2025-01-13T09:00:00.000Z"
+  },
+  {
+    "id": 3,
+    "name": "Mechanical Keyboard",
+    "sku": "KEYB-MECH-87",
+    "current_price_cents": 8999,
+    "created_at": "2025-01-20T09:00:00.000Z"
+  },
+  {
+    "id": 4,
+    "name": "27\" 4K Monitor",
+    "sku": "MON-4K-27",
+    "current_price_cents": 34999,
+    "created_at": "2025-01-27T09:00:00.000Z"
+  },
+  {
+    "id": 5,
+    "name": "Laptop Stand",
+    "sku": "STND-LAP-AL",
+    "current_price_cents": 4599,
+    "created_at": "2025-02-03T09:00:00.000Z"
+  },
+  {
+    "id": 6,
+    "name": "Noise-Cancelling Headphones",
+    "sku": "HEAD-NC-900",
+    "current_price_cents": 24999,
+    "created_at": "2025-02-10T09:00:00.000Z"
+  },
+  {
+    "id": 7,
+    "name": "Webcam 1080p",
+    "sku": "CAM-1080-P",
+    "current_price_cents": 5999,
+    "created_at": "2025-02-17T09:00:00.000Z"
+  },
+  {
+    "id": 8,
+    "name": "Desk Lamp LED",
+    "sku": "LAMP-LED-DSK",
+    "current_price_cents": 3299,
+    "created_at": "2025-02-24T09:00:00.000Z"
+  },
+  {
+    "id": 9,
+    "name": "Portable SSD 1TB",
+    "sku": "SSD-PORT-1TB",
+    "current_price_cents": 12999,
+    "created_at": "2025-03-03T09:00:00.000Z"
+  },
+  {
+    "id": 10,
+    "name": "Bluetooth Speaker",
+    "sku": "SPKR-BT-MINI",
+    "current_price_cents": 3999,
+    "created_at": "2025-03-10T09:00:00.000Z"
+  },
+  {
+    "id": 11,
+    "name": "Standing Desk",
+    "sku": "DESK-STND-EL",
+    "current_price_cents": 49999,
+    "created_at": "2025-03-17T09:00:00.000Z"
+  },
+  {
+    "id": 12,
+    "name": "Ergonomic Chair",
+    "sku": "CHR-ERGO-PRO",
+    "current_price_cents": 39999,
+    "created_at": "2025-03-24T09:00:00.000Z"
+  },
+  {
+    "id": 13,
+    "name": "HDMI Cable 2m",
+    "sku": "CABL-HDMI-2M",
+    "current_price_cents": 1299,
+    "created_at": "2025-03-31T09:00:00.000Z"
+  },
+  {
+    "id": 14,
+    "name": "Phone Charger 65W",
+    "sku": "CHRG-65W-GAN",
+    "current_price_cents": 3499,
+    "created_at": "2025-04-07T09:00:00.000Z"
+  },
+  {
+    "id": 15,
+    "name": "Smart Watch",
+    "sku": "WTCH-SMT-S2",
+    "current_price_cents": 19999,
+    "created_at": "2025-04-14T09:00:00.000Z"
+  },
+  {
+    "id": 16,
+    "name": "Fitness Tracker",
+    "sku": "TRKR-FIT-B3",
+    "current_price_cents": 7499,
+    "created_at": "2025-04-21T09:00:00.000Z"
+  },
+  {
+    "id": 17,
+    "name": "Tablet 10\"",
+    "sku": "TAB-10-64G",
+    "current_price_cents": 29999,
+    "created_at": "2025-04-28T09:00:00.000Z"
+  },
+  {
+    "id": 18,
+    "name": "e-Reader",
+    "sku": "READ-E-INK",
+    "current_price_cents": 11999,
+    "created_at": "2025-05-05T09:00:00.000Z"
+  },
+  {
+    "id": 19,
+    "name": "Coffee Grinder",
+    "sku": "GRND-COF-BR",
+    "current_price_cents": 6499,
+    "created_at": "2025-05-12T09:00:00.000Z"
+  },
+  {
+    "id": 20,
+    "name": "Insulated Water Bottle",
+    "sku": "BTL-INS-750",
+    "current_price_cents": 2299,
+    "created_at": "2025-05-19T09:00:00.000Z"
+  },
+  {
+    "id": 21,
+    "name": "Travel Backpack 30L",
+    "sku": "BAG-TRVL-30L",
+    "current_price_cents": 7999,
+    "created_at": "2025-05-26T09:00:00.000Z"
+  },
+  {
+    "id": 22,
+    "name": "Notebook A5 Dotted",
+    "sku": "NOTE-A5-DOT",
+    "current_price_cents": 1499,
+    "created_at": "2025-06-02T09:00:00.000Z"
+  },
+  {
+    "id": 23,
+    "name": "Gel Pen Set (12)",
+    "sku": "PEN-GEL-12",
+    "current_price_cents": 999,
+    "created_at": "2025-06-09T09:00:00.000Z"
+  },
+  {
+    "id": 24,
+    "name": "Desk Organizer",
+    "sku": "ORG-DESK-BMB",
+    "current_price_cents": 2799,
+    "created_at": "2025-06-16T09:00:00.000Z"
+  },
+  {
+    "id": 25,
+    "name": "Dual Monitor Arm",
+    "sku": "ARM-MON-DUAL",
+    "current_price_cents": 9999,
+    "created_at": "2025-06-23T09:00:00.000Z"
+  },
+  {
+    "id": 26,
+    "name": "Cable Management Kit",
+    "sku": "CBLM-KIT-STD",
+    "current_price_cents": 1899,
+    "created_at": "2025-06-30T09:00:00.000Z"
+  },
+  {
+    "id": 27,
+    "name": "Laptop Sleeve 14\"",
+    "sku": "SLV-LAP-14",
+    "current_price_cents": 2599,
+    "created_at": "2025-07-07T09:00:00.000Z"
+  },
+  {
+    "id": 28,
+    "name": "Wireless Charger Pad",
+    "sku": "CHRG-QI-PAD",
+    "current_price_cents": 2999,
+    "created_at": "2025-07-14T09:00:00.000Z"
+  },
+  {
+    "id": 29,
+    "name": "Premium Camera Kit",
+    "sku": "CAM-PRO-KIT",
+    "current_price_cents": 499900,
+    "created_at": "2025-07-21T09:00:00.000Z"
+  },
+  {
+    "id": 30,
+    "name": "Gaming Console X",
+    "sku": "GAME-CON-X",
+    "current_price_cents": 59999,
+    "created_at": "2025-07-28T09:00:00.000Z"
+  }
+]

@@ -1,0 +1,31 @@
+{
+  "name": "ecommerce-ai-assistant-coding-challenge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Starter repository for a two-hour senior software engineer take-home: build an AI-powered natural-language analytics assistant over a seeded SQLite e-commerce database. This repo contains only the challenge bootstrap (data model, deterministic seed data, database create/reset scripts, and docs) and intentionally no candidate solution.",
+  "type": "module",
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "scripts": {
+    "db:create": "tsx scripts/create-database.ts",
+    "db:reset": "tsx scripts/create-database.ts --reset"
+  },
+  "keywords": [
+    "coding-challenge",
+    "take-home",
+    "sqlite",
+    "typescript",
+    "starter"
+  ],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "better-sqlite3": "^13.0.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.10.0",
+    "tsx": "^4.23.1",
+    "typescript": "^5.7.2"
+  }
+}
