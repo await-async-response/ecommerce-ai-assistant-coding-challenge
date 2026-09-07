@@ -1,15 +1,17 @@
 # E-Commerce AI Analytics Assistant: Coding Challenge
 
-A starting point for a two-hour take-home. It sets up a small e-commerce data
-model and a SQLite database seeded with sample data. The challenge itself,
-building an assistant that answers questions about this data, is described in
-[CHALLENGE.md](./CHALLENGE.md).
+This repository contains a small MVP analytics assistant for the seeded SQLite
+store dataset. The CLI accepts a natural-language question, determines the
+intent, runs a read-only SQL query against the database, and prints a readable
+result table.
 
-This repository does not include a solution. That part is up to you.
+The challenge description and requirements are in [CHALLENGE.md](./CHALLENGE.md).
 
 ## Requirements
 
-Node.js 20 or newer and npm.
+- Node.js 20 or newer
+- npm
+- Optional: OpenAI API key for the AI intent parser
 
 ## Setup
 
@@ -35,23 +37,53 @@ questions.
 
 ```bash
 npm run ask -- "Who ordered the most in the last seven days?"
+npm run ask -- "What was the total order value yesterday?"
 npm run ask -- "Which products were ordered in the greatest quantities?"
+npm run ask -- "What is the average order value?"
 ```
 
 ## How it works
 
 The command-line assistant does the following:
 
-1. Parses the user question into a structured intent.
-2. Uses a deterministic fallback parser when no AI API key is configured.
-3. Runs a safe SQLite read query over the seeded e-commerce database.
-4. Returns the answer in a simple table format.
+1. Accepts a plain-English question from the CLI.
+2. Parses the question into a supported analytics intent.
+3. Uses a deterministic fallback parser when no API key is configured.
+4. Runs a safe read-only SQLite query against the e-commerce data.
+5. Returns the answer as a table.
 
-The implementation is intentionally small and focused on an MVP: it supports a
-subset of natural-language analytical questions and refuses unsupported ones
-rather than guessing.
+This is intentionally a narrow MVP focused on a subset of common analytics
+questions rather than a broad agent framework.
 
-There's no test runner, linter, or type-checking configured. Add whatever you like.
+## Assumptions and constraints
+
+- Money is stored and handled in integer cents.
+- Historical order totals use `order_items.unit_price_cents`, not the current
+  product price.
+- The app only supports a limited set of natural-language question patterns.
+- Unsupported or ambiguous questions are rejected instead of guessed.
+- This is a CLI MVP; it does not include UI, authentication, or deployment.
+
+## Known gaps in this MVP
+
+- The intent parser is intentionally narrow and rule-based by default.
+- Not every possible natural-language variation is covered.
+- SQL generation is template-driven rather than fully dynamic.
+- There are no automated tests yet.
+- Error handling is basic and could be more user-friendly.
+- The OpenAI integration is optional and not required for the fallback flow.
+
+## What would be improved for production
+
+- Add proper automated tests for supported question types and edge cases.
+- Introduce a more robust LLM-to-SQL validation layer before executing queries.
+- Add schema-aware validation to reject unsafe or unsupported SQL patterns.
+- Improve question parsing to cover a wider range of natural-language phrasing.
+- Add retries, timeouts, and clearer error messages for provider failures.
+- Add observability and logging around intent parsing and query execution.
+- Add a safer API layer with authentication, rate limiting, and request validation.
+- Consider a richer frontend or API interface for non-CLI use cases.
+- Add more analytics templates and a consistent result schema for reporting.
 
 ## AI coding assistants
 
