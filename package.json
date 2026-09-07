@@ -9,7 +9,8 @@
   },
   "scripts": {
     "db:create": "tsx scripts/create-database.ts",
-    "db:reset": "tsx scripts/create-database.ts --reset"
+    "db:reset": "tsx scripts/create-database.ts --reset",
+    "ask": "tsx src/cli.ts"
   },
   "keywords": [
     "coding-challenge",
