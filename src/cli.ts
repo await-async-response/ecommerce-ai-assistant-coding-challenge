@@ -2,6 +2,7 @@
 
 import { openDatabase } from './database/connection.ts';
 import { answerQuestion } from './analytics/question-engine.ts';
+import { parseQuestionIntent } from './ai/intent-parser.ts';
 
 function printTable(rows: Array<Record<string, string | number>>, title: string): void {
   if (rows.length === 0) {
@@ -26,7 +27,7 @@ function printTable(rows: Array<Record<string, string | number>>, title: string)
   }
 }
 
-function main(): void {
+async function main(): Promise<void> {
   const rawQuestion = process.argv.slice(2).join(' ');
 
   if (!rawQuestion.trim()) {
@@ -36,11 +37,15 @@ function main(): void {
 
   const db = openDatabase();
   try {
-    const answer = answerQuestion(rawQuestion, db);
+    const intent = await parseQuestionIntent(rawQuestion);
+    const answer = answerQuestion(rawQuestion, db, intent);
     printTable(answer.rows, answer.title);
   } finally {
     db.close();
   }
 }
 
-main();
+main().catch((error) => {
+  console.error('Failed to process the question:', error instanceof Error ? error.message : error);
+  process.exit(1);
+});

@@ -1,4 +1,5 @@
 import type { Database as DatabaseType } from 'better-sqlite3';
+import type { QuestionIntent } from '../ai/intent-parser.ts';
 
 export interface AnalyticsAnswer {
   title: string;
@@ -45,12 +46,14 @@ function getLatestOrderTimestamp(db: DatabaseType): string {
   return row?.latest_ordered_at ?? '1970-01-01T00:00:00.000Z';
 }
 
-export function answerQuestion(question: string, db: DatabaseType): AnalyticsAnswer {
+export function answerQuestion(question: string, db: DatabaseType, intent?: QuestionIntent): AnalyticsAnswer {
   const normalizedQuestion = normalizeQuestion(question);
   const lowerQuestion = normalizedQuestion.toLowerCase();
+  const resolvedIntent = intent ?? { kind: 'unsupported', reason: 'No intent.' };
 
-  if (/who.*ordered.*most|top.*users.*(last|recent)|ordered.*most.*last/i.test(normalizedQuestion)) {
-    const days = extractDaysWindow(normalizedQuestion) ?? 7;
+  if (resolvedIntent.kind === 'top_users') {
+    const days = resolvedIntent.days ?? 7;
+    const limit = resolvedIntent.limit ?? 5;
     const latestOrderTimestamp = getLatestOrderTimestamp(db);
     const rows = db
       .prepare(
@@ -62,25 +65,22 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
           WHERE o.ordered_at >= datetime(@latest_ordered_at, '-' || @days || ' days')
           GROUP BY u.id, u.name
           ORDER BY total_cents DESC
-          LIMIT 5
+          LIMIT @limit
         `,
       )
-      .all({ latest_ordered_at: latestOrderTimestamp, days }) as Array<{ user_name: string; total_cents: number }>;
+      .all({ latest_ordered_at: latestOrderTimestamp, days, limit }) as Array<{ user_name: string; total_cents: number }>;
 
     return {
       title: `Top users by total order value in the last ${days} days`,
-      rows:
-        rows.length > 0
-          ? rows.map((row, index) => ({
-              rank: index + 1,
-              user: row.user_name,
-              total: formatCurrency(row.total_cents),
-            }))
-          : [],
+      rows: rows.map((row, index) => ({
+        rank: index + 1,
+        user: row.user_name,
+        total: formatCurrency(row.total_cents),
+      })),
     };
   }
 
-  if (/what.*total.*order.*value.*yesterday|total.*order.*value.*yesterday|yesterday.*order.*value/i.test(lowerQuestion)) {
+  if (resolvedIntent.kind === 'total_value') {
     const latestOrderTimestamp = getLatestOrderTimestamp(db);
     const row = db
       .prepare(
@@ -105,7 +105,8 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
     };
   }
 
-  if (/which products were ordered in the greatest quantities|products.*greatest quantities|ordered.*greatest quantities/i.test(lowerQuestion)) {
+  if (resolvedIntent.kind === 'products_by_quantity') {
+    const limit = resolvedIntent.limit ?? 10;
     const rows = db
       .prepare(
         `
@@ -114,10 +115,10 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
           JOIN products p ON p.id = oi.product_id
           GROUP BY p.id, p.name
           ORDER BY total_quantity DESC, p.name ASC
-          LIMIT 10
+          LIMIT @limit
         `,
       )
-      .all() as Array<{ product_name: string; total_quantity: number }>;
+      .all({ limit }) as Array<{ product_name: string; total_quantity: number }>;
 
     return {
       title: 'Products ordered in the greatest quantities',
@@ -129,7 +130,7 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
     };
   }
 
-  if (/how many orders did each user place|orders did each user place|orders per user|each user.*orders/i.test(lowerQuestion)) {
+  if (resolvedIntent.kind === 'orders_per_user') {
     const rows = db
       .prepare(
         `
@@ -152,7 +153,7 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
     };
   }
 
-  if (/average order value|what is the average order value/i.test(lowerQuestion)) {
+  if (resolvedIntent.kind === 'average_order_value') {
     const row = db
       .prepare(
         `
@@ -178,7 +179,8 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
     };
   }
 
-  if (/products.*generated.*most.*order value|which products generated the most order value|most order value/i.test(lowerQuestion)) {
+  if (resolvedIntent.kind === 'products_by_order_value') {
+    const limit = resolvedIntent.limit ?? 10;
     const rows = db
       .prepare(
         `
@@ -187,10 +189,10 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
           JOIN products p ON p.id = oi.product_id
           GROUP BY p.id, p.name
           ORDER BY total_cents DESC, p.name ASC
-          LIMIT 10
+          LIMIT @limit
         `,
       )
-      .all() as Array<{ product_name: string; total_cents: number }>;
+      .all({ limit }) as Array<{ product_name: string; total_cents: number }>;
 
     return {
       title: 'Products by total order value',
@@ -202,12 +204,7 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
     };
   }
 
-  const productName = extractNamedValue(normalizedQuestion, [
-    /(?:specific\s+)?product(?:\s+(?:named|called|is|was))?\s+(.+?)(?:\?|$)/i,
-    /product\s+(?:named|called)\s+(.+?)(?:\?|$)/i,
-  ]);
-
-  if (productName && /which users.*ordered|users.*ordered.*product|ordered.*specific product|ordered.*product/i.test(lowerQuestion)) {
+  if (resolvedIntent.kind === 'users_for_product') {
     const rows = db
       .prepare(
         `
@@ -220,10 +217,10 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
           ORDER BY u.name ASC
         `,
       )
-      .all({ product_name: productName }) as Array<{ user_name: string }>;
+      .all({ product_name: resolvedIntent.product }) as Array<{ user_name: string }>;
 
     return {
-      title: `Users who ordered ${productName}`,
+      title: `Users who ordered ${resolvedIntent.product}`,
       rows: rows.map((row, index) => ({
         rank: index + 1,
         user: row.user_name,
@@ -231,13 +228,7 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
     };
   }
 
-  const userName = extractNamedValue(normalizedQuestion, [
-    /(?:show|list|give|display).*orders.*(?:for|by|of)\s+(.+?)(?:\?|$)/i,
-    /orders.*placed\s+by\s+(.+?)(?:\?|$)/i,
-    /user\s+(?:named|called)\s+(.+?)(?:\?|$)/i,
-  ]);
-
-  if (userName && /show.*orders|orders.*specific user|orders.*placed.*by|orders.*for/i.test(lowerQuestion)) {
+  if (resolvedIntent.kind === 'orders_for_user') {
     const rows = db
       .prepare(
         `
@@ -252,10 +243,10 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
           ORDER BY o.ordered_at DESC
         `,
       )
-      .all({ user_name: userName }) as Array<{ order_id: number; ordered_at: string; total_cents: number }>;
+      .all({ user_name: resolvedIntent.user }) as Array<{ order_id: number; ordered_at: string; total_cents: number }>;
 
     return {
-      title: `Orders placed by ${userName}`,
+      title: `Orders placed by ${resolvedIntent.user}`,
       rows: rows.map((row) => ({
         order_id: row.order_id,
         ordered_at: row.ordered_at,
@@ -268,7 +259,7 @@ export function answerQuestion(question: string, db: DatabaseType): AnalyticsAns
     title: 'Unsupported question',
     rows: [
       {
-        status: 'I can answer questions about top users, total value, product quantities, average order value, product-specific purchases, and per-user order history.',
+        status: resolvedIntent.kind === 'unsupported' ? resolvedIntent.reason : 'This question is not supported by the current analytics assistant.',
       },
     ],
   };
